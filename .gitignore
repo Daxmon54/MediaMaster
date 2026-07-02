@@ -1,0 +1,22 @@
+## .NET / Visual Studio
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+## Test results
+TestResults/
+
+## Runtime data produced by the app (SQLite DB, export/tracklog/livetrack outputs)
+*.db
+*.db-shm
+*.db-wal
+src/MediaMaster.App/Data/
+src/MediaMaster.App/Export/
+src/MediaMaster.App/LiveTrack/
+src/MediaMaster.App/Tracklog/
+
+## OS
+Thumbs.db
+.DS_Store

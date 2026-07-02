@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MediaMaster.App/MediaMaster.App.vbproj" />
+    <Project Path="src/MediaMaster.Core/MediaMaster.Core.vbproj" />
+    <Project Path="src/MediaMaster.Data/MediaMaster.Data.vbproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MediaMaster.Core.Tests/MediaMaster.Core.Tests.vbproj" />
+  </Folder>
+</Solution>
