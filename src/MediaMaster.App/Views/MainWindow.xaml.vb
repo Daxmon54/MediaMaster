@@ -9,13 +9,17 @@ Namespace Views
 
         Private ReadOnly _viewModel As MainViewModel
         Private ReadOnly _settingsWindowFactory As Func(Of SettingsWindow)
+        Private ReadOnly _destinationSettingsWindowFactory As Func(Of DestinationSettingsWindow)
         Private _confirmedQuit As Boolean = False
 
-        Public Sub New(viewModel As MainViewModel, settingsWindowFactory As Func(Of SettingsWindow))
+        Public Sub New(viewModel As MainViewModel,
+                        settingsWindowFactory As Func(Of SettingsWindow),
+                        destinationSettingsWindowFactory As Func(Of DestinationSettingsWindow))
             InitializeComponent()
 
             _viewModel = viewModel
             _settingsWindowFactory = settingsWindowFactory
+            _destinationSettingsWindowFactory = destinationSettingsWindowFactory
             DataContext = _viewModel
 
             AddHandler _viewModel.RestoreRequested, AddressOf OnRestoreRequested
@@ -28,6 +32,12 @@ Namespace Views
             Dim settingsWindow = _settingsWindowFactory()
             settingsWindow.Owner = Me
             settingsWindow.ShowDialog()
+        End Sub
+
+        Private Sub OnOpenDestinationSettingsClick(sender As Object, e As RoutedEventArgs)
+            Dim destinationWindow = _destinationSettingsWindowFactory()
+            destinationWindow.Owner = Me
+            destinationWindow.ShowDialog()
         End Sub
 
         Private Sub OnRestoreRequested(sender As Object, e As EventArgs)
