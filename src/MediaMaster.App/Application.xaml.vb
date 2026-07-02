@@ -72,6 +72,10 @@ Partial Public Class Application
         services.AddSingleton(Of IUiUpdateSink, DispatcherUiUpdateService)()
         services.AddSingleton(Of MainWindow)()
 
+        services.AddTransient(Of SettingsViewModel)()
+        services.AddTransient(Of SettingsWindow)()
+        services.AddSingleton(Of Func(Of SettingsWindow))(Function(sp) Function() sp.GetRequiredService(Of SettingsWindow)())
+
         services.AddSingleton(Of HttpClient)()
         services.AddSingleton(Of ISourceMonitorFactory, SourceMonitorFactory)()
         services.AddSingleton(Of ISourceMonitor)(Function(sp) sp.GetRequiredService(Of ISourceMonitorFactory)().Create())

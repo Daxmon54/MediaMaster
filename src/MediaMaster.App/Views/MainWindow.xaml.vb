@@ -8,18 +8,26 @@ Namespace Views
         Inherits Window
 
         Private ReadOnly _viewModel As MainViewModel
+        Private ReadOnly _settingsWindowFactory As Func(Of SettingsWindow)
         Private _confirmedQuit As Boolean = False
 
-        Public Sub New(viewModel As MainViewModel)
+        Public Sub New(viewModel As MainViewModel, settingsWindowFactory As Func(Of SettingsWindow))
             InitializeComponent()
 
             _viewModel = viewModel
+            _settingsWindowFactory = settingsWindowFactory
             DataContext = _viewModel
 
             AddHandler _viewModel.RestoreRequested, AddressOf OnRestoreRequested
             AddHandler _viewModel.QuitRequested, AddressOf OnQuitRequested
             AddHandler _viewModel.MinimizeToTrayRequested, AddressOf OnMinimizeToTrayRequested
             AddHandler _viewModel.LogEntries.CollectionChanged, AddressOf OnLogEntriesChanged
+        End Sub
+
+        Private Sub OnOpenSettingsClick(sender As Object, e As RoutedEventArgs)
+            Dim settingsWindow = _settingsWindowFactory()
+            settingsWindow.Owner = Me
+            settingsWindow.ShowDialog()
         End Sub
 
         Private Sub OnRestoreRequested(sender As Object, e As EventArgs)

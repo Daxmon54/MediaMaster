@@ -1,3 +1,5 @@
+Imports System.Collections.Generic
+Imports System.Linq
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports Microsoft.EntityFrameworkCore
@@ -22,6 +24,12 @@ Namespace Repositories
         Public Async Function GetByIdAsync(editionsId As Integer, Optional cancellationToken As CancellationToken = Nothing) As Task(Of Edition) Implements IEditionRepository.GetByIdAsync
             Using context = Await _dbContextFactory.CreateDbContextAsync(cancellationToken)
                 Return Await context.Editions.FirstOrDefaultAsync(Function(e) e.EditionsID = editionsId, cancellationToken)
+            End Using
+        End Function
+
+        Public Async Function GetAllAsync(Optional cancellationToken As CancellationToken = Nothing) As Task(Of List(Of Edition)) Implements IEditionRepository.GetAllAsync
+            Using context = Await _dbContextFactory.CreateDbContextAsync(cancellationToken)
+                Return Await context.Editions.OrderBy(Function(e) e.Name).ToListAsync(cancellationToken)
             End Using
         End Function
 

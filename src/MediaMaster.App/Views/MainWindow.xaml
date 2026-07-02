@@ -19,7 +19,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Settings">
-                <MenuItem Header="General" IsEnabled="False" />
+                <MenuItem Header="General" Click="OnOpenSettingsClick" />
                 <MenuItem Header="Traffic Info" IsEnabled="False" />
                 <MenuItem Header="Source" IsEnabled="False" />
                 <MenuItem Header="Destination" IsEnabled="False" />

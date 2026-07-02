@@ -1,0 +1,106 @@
+<Window x:Class="Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MediaMaster Settings" Height="560" Width="560"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Save" Width="90" Margin="0,0,8,0" IsDefault="True" Command="{Binding SaveCommand}" />
+            <Button Content="Cancel" Width="90" IsCancel="True" Command="{Binding CancelCommand}" />
+        </StackPanel>
+
+        <TabControl>
+            <TabItem Header="General">
+                <StackPanel Margin="12">
+                    <CheckBox Content="Enable trace/debug logging" IsChecked="{Binding TraceEnabled}" Margin="0,4" />
+
+                    <TextBlock Text="Language" Margin="0,8,0,2" />
+                    <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding Language}" Width="160" HorizontalAlignment="Left">
+                        <ComboBoxItem Content="English" Tag="en" />
+                        <ComboBoxItem Content="Nederlands" Tag="nl" />
+                    </ComboBox>
+
+                    <TextBlock Text="Edition" Margin="0,8,0,2" />
+                    <ComboBox x:Name="EditionComboBox" ItemsSource="{Binding Editions}" DisplayMemberPath="Name"
+                              SelectedValuePath="EditionsID" SelectedValue="{Binding SelectedEditionId}"
+                              Width="300" HorizontalAlignment="Left" />
+
+                    <Separator Margin="0,14" />
+
+                    <CheckBox Content="Log tracks to the MusicLog database" IsChecked="{Binding LogToDatabase}" Margin="0,4" />
+                    <CheckBox Content="Log tracks to a daily playlog file" IsChecked="{Binding LogToFile}" Margin="0,4" />
+
+                    <TextBlock Text="Track log folder" Margin="0,8,0,2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding TrackLogFolderPath}" />
+                        <Button Grid.Column="1" Content="Browse..." Width="80" Margin="6,0,0,0" Click="OnBrowseTrackLogFolder" />
+                    </Grid>
+
+                    <Separator Margin="0,14" />
+
+                    <CheckBox Content="Write current track to livetrack.txt" IsChecked="{Binding LiveTrackEnabled}" Margin="0,4" />
+
+                    <TextBlock Text="Live track folder" Margin="0,8,0,2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding LiveTrackFolderPath}" />
+                        <Button Grid.Column="1" Content="Browse..." Width="80" Margin="6,0,0,0" Click="OnBrowseLiveTrackFolder" />
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Descriptions">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="12">
+                        <TextBlock Text="Default text" Margin="0,4,0,2" />
+                        <TextBox Text="{Binding DefaultText}" />
+
+                        <TextBlock Text="Top of the hour" Margin="0,8,0,2" />
+                        <TextBox Text="{Binding TimeOfTheHour}" />
+
+                        <TextBlock Text="Commercial" Margin="0,8,0,2" />
+                        <TextBox Text="{Binding Commercial}" />
+
+                        <TextBlock Text="Info" Margin="0,8,0,2" />
+                        <TextBox Text="{Binding Info}" />
+
+                        <Separator Margin="0,14" />
+                        <TextBlock Text="Carmen event slots (1-10)" FontWeight="Bold" Margin="0,0,0,6" />
+
+                        <TextBlock Text="Event 1" Margin="0,4,0,2" />
+                        <TextBox Text="{Binding Event1}" />
+                        <TextBlock Text="Event 2" Margin="0,4,0,2" />
+                        <TextBox Text="{Binding Event2}" />
+                        <TextBlock Text="Event 3" Margin="0,4,0,2" />
+                        <TextBox Text="{Binding Event3}" />
+                        <TextBlock Text="Event 4" Margin="0,4,0,2" />
+                        <TextBox Text="{Binding Event4}" />
+                        <TextBlock Text="Event 5" Margin="0,4,0,2" />
+                        <TextBox Text="{Binding Event5}" />
+                        <TextBlock Text="Event 6" Margin="0,4,0,2" />
+                        <TextBox Text="{Binding Event6}" />
+                        <TextBlock Text="Event 7" Margin="0,4,0,2" />
+                        <TextBox Text="{Binding Event7}" />
+                        <TextBlock Text="Event 8" Margin="0,4,0,2" />
+                        <TextBox Text="{Binding Event8}" />
+                        <TextBlock Text="Event 9" Margin="0,4,0,2" />
+                        <TextBox Text="{Binding Event9}" />
+                        <TextBlock Text="Event 10" Margin="0,4,0,2" />
+                        <TextBox Text="{Binding Event10}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

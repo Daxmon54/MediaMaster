@@ -5,6 +5,8 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>MediaMaster.App</RootNamespace>
     <UseWPF>true</UseWPF>
+    <!-- Only for System.Windows.Forms.FolderBrowserDialog (WPF has no built-in folder picker on this SDK). -->
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
