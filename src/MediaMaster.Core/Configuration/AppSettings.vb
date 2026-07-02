@@ -73,7 +73,7 @@ Namespace Configuration
     End Class
 
     Public Class PowerStudioSettings
-        Public Property WatchFolder As String = ""
+        Public Property WatchFile As String = ""
     End Class
 
     Public Class AppSettings

@@ -14,7 +14,7 @@ Public Class SourceMonitorFactoryTests
             .AcrFtp = New AcrFtpSettings With {.Host = "ftp.example.test"},
             .Ots = New OtsSettings With {.WatchFolder = "C:\ots"},
             .Caliope = New CaliopeSettings With {.WatchFile = "C:\caliope\now.txt"},
-            .PowerStudio = New PowerStudioSettings With {.WatchFolder = "C:\powerstudio"}
+            .PowerStudio = New PowerStudioSettings With {.WatchFile = "C:\powerstudio\now.xml"}
         }
         Dim settingsProvider = New Mock(Of IAppSettingsProvider)()
         settingsProvider.Setup(Function(s) s.GetSettings()).Returns(settings)

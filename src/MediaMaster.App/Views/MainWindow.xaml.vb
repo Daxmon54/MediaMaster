@@ -10,16 +10,19 @@ Namespace Views
         Private ReadOnly _viewModel As MainViewModel
         Private ReadOnly _settingsWindowFactory As Func(Of SettingsWindow)
         Private ReadOnly _destinationSettingsWindowFactory As Func(Of DestinationSettingsWindow)
+        Private ReadOnly _sourceSettingsWindowFactory As Func(Of SourceSettingsWindow)
         Private _confirmedQuit As Boolean = False
 
         Public Sub New(viewModel As MainViewModel,
                         settingsWindowFactory As Func(Of SettingsWindow),
-                        destinationSettingsWindowFactory As Func(Of DestinationSettingsWindow))
+                        destinationSettingsWindowFactory As Func(Of DestinationSettingsWindow),
+                        sourceSettingsWindowFactory As Func(Of SourceSettingsWindow))
             InitializeComponent()
 
             _viewModel = viewModel
             _settingsWindowFactory = settingsWindowFactory
             _destinationSettingsWindowFactory = destinationSettingsWindowFactory
+            _sourceSettingsWindowFactory = sourceSettingsWindowFactory
             DataContext = _viewModel
 
             AddHandler _viewModel.RestoreRequested, AddressOf OnRestoreRequested
@@ -38,6 +41,19 @@ Namespace Views
             Dim destinationWindow = _destinationSettingsWindowFactory()
             destinationWindow.Owner = Me
             destinationWindow.ShowDialog()
+        End Sub
+
+        Private Sub OnOpenSourceSettingsClick(sender As Object, e As RoutedEventArgs)
+            Dim sourceWindow = _sourceSettingsWindowFactory()
+            sourceWindow.Owner = Me
+            Dim saved = sourceWindow.ShowDialog()
+            If saved = True Then
+                MessageBox.Show(
+                    "Restart the program for the source changes to take effect.",
+                    "MediaMaster",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information)
+            End If
         End Sub
 
         Private Sub OnRestoreRequested(sender As Object, e As EventArgs)

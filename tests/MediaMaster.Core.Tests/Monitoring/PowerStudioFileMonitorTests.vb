@@ -44,19 +44,22 @@ Public Class PowerStudioFileMonitorTests
 
     <Fact>
     Public Async Function RaisesTrackChanged_WithParsedArtistAndTitle_FromTheChangedFile() As Task
-        ' Regression for original bug #2: DataOntvangst4() read from the watched *folder* path
-        ' instead of the specific file that changed. Here the monitor must be able to correctly
-        ' read a file that changed, proving it uses the file path from the watcher event.
+        ' WIN_Source's picker for this field uses a single-file selector (fSelect, *.xml filter),
+        ' the same pattern as Caliope -- confirming this watches one specific file, not a folder.
         Dim xmlFile = Path.Combine(_tempDirectory, "nowplaying.xml")
         File.WriteAllText(xmlFile, BuildXml("", ""))
 
-        ' A decoy file sits in the same folder with different (stale) content -- if the monitor
-        ' mistakenly read "the folder" instead of the specific changed file, it could pick this up.
-        File.WriteAllText(Path.Combine(_tempDirectory, "decoy.xml"), BuildXml("WRONG ARTIST", "WRONG TITLE"))
+        ' A decoy file sits in the same folder -- the monitor must not react to it changing,
+        ' proving it watches only the specific configured file.
+        Dim decoyFile = Path.Combine(_tempDirectory, "decoy.xml")
+        File.WriteAllText(decoyFile, BuildXml("", ""))
 
-        Dim settings As New PowerStudioSettings With {.WatchFolder = _tempDirectory}
+        Dim settings As New PowerStudioSettings With {.WatchFile = xmlFile}
         Dim monitor As New PowerStudioFileMonitor(settings)
         Await monitor.StartAsync(CancellationToken.None)
+
+        Dim decoyTrack = Await WaitForTrackChangedAsync(monitor, Sub() File.WriteAllText(decoyFile, BuildXml("WRONG ARTIST", "WRONG TITLE")), timeoutSeconds:=2)
+        Assert.Null(decoyTrack)
 
         Dim track = Await WaitForTrackChangedAsync(monitor, Sub() File.WriteAllText(xmlFile, BuildXml("ABBA", "Dancing Queen")))
 
@@ -72,7 +75,7 @@ Public Class PowerStudioFileMonitorTests
         Dim xmlFile = Path.Combine(_tempDirectory, "nowplaying.xml")
         File.WriteAllText(xmlFile, BuildXml("ABBA", "Dancing Queen"))
 
-        Dim settings As New PowerStudioSettings With {.WatchFolder = _tempDirectory}
+        Dim settings As New PowerStudioSettings With {.WatchFile = xmlFile}
         Dim monitor As New PowerStudioFileMonitor(settings)
         Await monitor.StartAsync(CancellationToken.None)
 

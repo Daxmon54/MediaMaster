@@ -11,24 +11,29 @@ Namespace Monitoring
     ''' Watches a PowerStudio "now playing" XML file for changes and parses
     ''' /BroadcastMonitor/Current/artistName and /titleName.
     '''
-    ''' Fixes original bug #2: DataOntvangst4() loaded XML from the *watched folder path*
-    ''' (gsPowerStudio_WatchFolder) instead of the *specific file that changed*
-    ''' (sFullNameOfTheTrackedFile, the parameter it was actually handed) -- here the
-    ''' FileSystemWatcher event's own FullPath is what gets read.
+    ''' WIN_Source's folder-picker button for this field actually uses fSelect (a single-file
+    ''' picker filtered to *.xml), the same pattern as Caliope's fSelect (*.txt) -- confirming
+    ''' this was always a specific watch *file*, not a folder, despite the "WatchFolder" naming
+    ''' in the original globals. This watches that one file directly, same as CaliopeFileMonitor,
+    ''' rather than scanning a folder for any *.xml change.
+    '''
+    ''' Also fixes original bug #2: DataOntvangst4() loaded XML from the configured path directly
+    ''' instead of the file path handed to it by the tracking callback -- reading the
+    ''' FileSystemWatcher event's own FullPath here is the more robust equivalent.
     ''' </summary>
     Public Class PowerStudioFileMonitor
         Implements ISourceMonitor
 
         Public Event TrackChanged As EventHandler(Of TrackInfo) Implements ISourceMonitor.TrackChanged
 
-        Private ReadOnly _watchFolder As String
+        Private ReadOnly _watchFilePath As String
         Private ReadOnly _syncLock As New Object()
         Private _watcher As FileSystemWatcher
         Private _lastArtist As String = String.Empty
         Private _lastTitle As String = String.Empty
 
         Public Sub New(settings As PowerStudioSettings)
-            _watchFolder = settings.WatchFolder
+            _watchFilePath = settings.WatchFile
         End Sub
 
         Public ReadOnly Property PollingIntervalMs As Integer Implements ISourceMonitor.PollingIntervalMs
@@ -38,14 +43,23 @@ Namespace Monitoring
         End Property
 
         Public Function StartAsync(cancellationToken As CancellationToken) As Task Implements ISourceMonitor.StartAsync
-            If String.IsNullOrEmpty(_watchFolder) Then
-                Throw New InvalidOperationException("PowerStudioSettings.WatchFolder is not configured.")
-            End If
-            If Not Directory.Exists(_watchFolder) Then
-                Directory.CreateDirectory(_watchFolder)
+            If String.IsNullOrEmpty(_watchFilePath) Then
+                Throw New InvalidOperationException("PowerStudioSettings.WatchFile is not configured.")
             End If
 
-            _watcher = New FileSystemWatcher(_watchFolder, "*.xml") With {
+            Dim watchDirectory = Path.GetDirectoryName(_watchFilePath)
+            Dim watchFileName = Path.GetFileName(_watchFilePath)
+
+            ' The external PowerStudio tool owns this file and may not have started writing yet
+            ' (or on a fresh install, may never have run) -- create it so the watcher can still attach.
+            If Not Directory.Exists(watchDirectory) Then
+                Directory.CreateDirectory(watchDirectory)
+            End If
+            If Not File.Exists(_watchFilePath) Then
+                File.WriteAllText(_watchFilePath, "<BroadcastMonitor><Current><artistName /><titleName /></Current></BroadcastMonitor>")
+            End If
+
+            _watcher = New FileSystemWatcher(watchDirectory, watchFileName) With {
                 .NotifyFilter = NotifyFilters.LastWrite Or NotifyFilters.Size
             }
             AddHandler _watcher.Changed, AddressOf OnFileChanged
@@ -66,7 +80,6 @@ Namespace Monitoring
 
         Private Sub OnFileChanged(sender As Object, e As FileSystemEventArgs)
             SyncLock _syncLock
-                ' Bug #2 fix: read e.FullPath (the file that actually changed), not _watchFolder.
                 Dim document = LoadXmlWithRetry(e.FullPath)
                 If document Is Nothing Then
                     Return

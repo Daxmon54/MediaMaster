@@ -80,6 +80,10 @@ Partial Public Class Application
         services.AddTransient(Of DestinationSettingsWindow)()
         services.AddSingleton(Of Func(Of DestinationSettingsWindow))(Function(sp) Function() sp.GetRequiredService(Of DestinationSettingsWindow)())
 
+        services.AddTransient(Of SourceSettingsViewModel)()
+        services.AddTransient(Of SourceSettingsWindow)()
+        services.AddSingleton(Of Func(Of SourceSettingsWindow))(Function(sp) Function() sp.GetRequiredService(Of SourceSettingsWindow)())
+
         services.AddSingleton(Of HttpClient)()
         services.AddSingleton(Of ISourceMonitorFactory, SourceMonitorFactory)()
         services.AddSingleton(Of ISourceMonitor)(Function(sp) sp.GetRequiredService(Of ISourceMonitorFactory)().Create())

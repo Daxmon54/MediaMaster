@@ -21,7 +21,7 @@
             <MenuItem Header="_Settings">
                 <MenuItem Header="General" Click="OnOpenSettingsClick" />
                 <MenuItem Header="Traffic Info" IsEnabled="False" />
-                <MenuItem Header="Source" IsEnabled="False" />
+                <MenuItem Header="Source" Click="OnOpenSourceSettingsClick" />
                 <MenuItem Header="Destination" Click="OnOpenDestinationSettingsClick" />
                 <Separator />
                 <MenuItem Header="Quit" Command="{Binding QuitCommand}" />

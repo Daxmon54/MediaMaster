@@ -1,0 +1,149 @@
+<Window x:Class="Views.SourceSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MediaMaster Source" Height="620" Width="640"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Save" Width="90" Margin="0,0,8,0" IsDefault="True" Command="{Binding SaveCommand}" />
+            <Button Content="Cancel" Width="90" IsCancel="True" Command="{Binding CancelCommand}" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+            <TextBlock Text="Primary information source" Margin="0,0,0,2" />
+            <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding SystemType}" Width="300" HorizontalAlignment="Left">
+                <ComboBoxItem Content="Carmen (UDP)" Tag="1" />
+                <ComboBoxItem Content="ACR Cloud (Direct / REST)" Tag="2" />
+                <ComboBoxItem Content="ACR Cloud (FTP)" Tag="3" />
+                <ComboBoxItem Content="OTS" Tag="4" />
+                <ComboBoxItem Content="Caliope" Tag="5" />
+                <ComboBoxItem Content="PowerStudio" Tag="6" />
+            </ComboBox>
+
+            <StackPanel Visibility="{Binding IsCarmenModeVisible, Converter={StaticResource BoolToVis}}" Margin="0,8,0,0">
+                <TextBlock Text="Carmen mode of operation" Margin="0,0,0,2" />
+                <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding CarmenMode}" Width="300" HorizontalAlignment="Left">
+                    <ComboBoxItem Content="Song + Events" Tag="1" />
+                    <ComboBoxItem Content="Song Only" Tag="2" />
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+
+        <TabControl SelectedIndex="{Binding SelectedTabIndex, Mode=OneWay}">
+            <TabItem Header="Carmen">
+                <StackPanel Margin="12">
+                    <TextBlock Text="Carmen server address" Margin="0,4,0,2" />
+                    <TextBox Text="{Binding CarmenAddress}" />
+
+                    <TextBlock Text="Local UDP port" Margin="0,10,0,2" />
+                    <TextBox Text="{Binding CarmenLocalPort}" Width="120" HorizontalAlignment="Left" />
+
+                    <TextBlock Text="Remote UDP port" Margin="0,10,0,2" />
+                    <TextBox Text="{Binding CarmenRemotePort}" Width="120" HorizontalAlignment="Left" />
+
+                    <TextBlock Text="PFL watch folder" Margin="0,10,0,2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding PflFolder}" />
+                        <Button Grid.Column="1" Content="Browse..." Width="80" Margin="6,0,0,0" Click="OnBrowsePflFolder" />
+                    </Grid>
+
+                    <CheckBox Content="Extended Carmen data (track duration lookup)" IsChecked="{Binding CarmenExtended}" Margin="0,12,0,0" />
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="ACR Direct">
+                <StackPanel Margin="12">
+                    <TextBlock Text="ACRCloud base URL" Margin="0,4,0,2" />
+                    <TextBox Text="{Binding AcrUrl}" />
+
+                    <TextBlock Text="Project ID" Margin="0,10,0,2" />
+                    <TextBox Text="{Binding AcrProjectId}" Width="160" HorizontalAlignment="Left" />
+
+                    <TextBlock Text="Channel ID" Margin="0,10,0,2" />
+                    <TextBox Text="{Binding AcrChannelId}" Width="160" HorizontalAlignment="Left" />
+
+                    <TextBlock Text="Token" Margin="0,10,0,2" />
+                    <TextBox Text="{Binding AcrToken}" TextWrapping="Wrap" AcceptsReturn="True" Height="60" />
+
+                    <TextBlock Text="Polling interval (seconds)" Margin="0,10,0,2" />
+                    <TextBox Text="{Binding AcrPollSeconds}" Width="120" HorizontalAlignment="Left" />
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="ACR FTP">
+                <StackPanel Margin="12">
+                    <TextBlock Text="FTP server" Margin="0,4,0,2" />
+                    <TextBox Text="{Binding AcrFtpHost}" />
+
+                    <TextBlock Text="User" Margin="0,10,0,2" />
+                    <TextBox Text="{Binding AcrFtpUser}" />
+
+                    <TextBlock Text="Password" Margin="0,10,0,2" />
+                    <PasswordBox x:Name="AcrFtpPasswordBox" PasswordChanged="OnAcrFtpPasswordChanged" />
+
+                    <TextBlock Text="Polling interval (seconds)" Margin="0,10,0,2" />
+                    <TextBox Text="{Binding AcrFtpPollSeconds}" Width="120" HorizontalAlignment="Left" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                        <Button Content="Test connection" Width="120" Command="{Binding TestFtpConnectionCommand}" />
+                        <TextBlock Text="{Binding FtpTestResult}" VerticalAlignment="Center" Margin="10,0,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="OTS">
+                <StackPanel Margin="12">
+                    <TextBlock Text="OTS watch folder" Margin="0,4,0,2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding OtsWatchFolder}" />
+                        <Button Grid.Column="1" Content="Browse..." Width="80" Margin="6,0,0,0" Click="OnBrowseOtsFolder" />
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Caliope">
+                <StackPanel Margin="12">
+                    <TextBlock Text="Caliope watch file" Margin="0,4,0,2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding CaliopeWatchFile}" />
+                        <Button Grid.Column="1" Content="Browse..." Width="80" Margin="6,0,0,0" Click="OnBrowseCaliopeFile" />
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="PowerStudio">
+                <StackPanel Margin="12">
+                    <TextBlock Text="PowerStudio watch file" Margin="0,4,0,2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding PowerStudioWatchFile}" />
+                        <Button Grid.Column="1" Content="Browse..." Width="80" Margin="6,0,0,0" Click="OnBrowsePowerStudioFile" />
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
