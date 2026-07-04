@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="MediaMaster Source" Height="620" Width="640"
-        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="{DynamicResource Theme.WindowBackground}" Foreground="{DynamicResource Theme.Foreground}">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />

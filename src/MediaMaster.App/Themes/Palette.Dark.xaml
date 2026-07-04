@@ -1,0 +1,17 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Dark palette. See Palette.Light.xaml for how this is used. -->
+    <SolidColorBrush x:Key="Theme.WindowBackground" Color="#1E1E1E" />
+    <SolidColorBrush x:Key="Theme.Foreground" Color="#F0F0F0" />
+    <SolidColorBrush x:Key="Theme.ControlBackground" Color="#2D2D30" />
+    <SolidColorBrush x:Key="Theme.ControlBorder" Color="#3F3F46" />
+    <SolidColorBrush x:Key="Theme.MenuBarBackground" Color="#2D2D30" />
+    <SolidColorBrush x:Key="Theme.MenuPopupBackground" Color="#252526" />
+    <SolidColorBrush x:Key="Theme.HoverBackground" Color="#3E3E42" />
+    <SolidColorBrush x:Key="Theme.SelectionBackground" Color="#094771" />
+    <SolidColorBrush x:Key="Theme.SelectionForeground" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="Theme.DisabledForeground" Color="#7A7A7A" />
+    <SolidColorBrush x:Key="Theme.Accent" Color="#3FA34D" />
+
+</ResourceDictionary>

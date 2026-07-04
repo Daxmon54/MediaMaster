@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:MediaMaster.App"
              ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/MediaMaster.App;component/Themes/Controls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

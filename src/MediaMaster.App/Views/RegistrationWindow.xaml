@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="MediaMaster Registration" Height="260" Width="520"
-        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="{DynamicResource Theme.WindowBackground}" Foreground="{DynamicResource Theme.Foreground}">
 
     <StackPanel Margin="14">
         <TextBlock Text="Name" Margin="0,0,0,2" />
@@ -19,7 +20,7 @@
         </Grid>
 
         <TextBlock Text="Serial number" Margin="0,14,0,2" />
-        <TextBox Text="{Binding SerialNumber}" IsReadOnly="True" Background="#EEEEEE" />
+        <TextBox Text="{Binding SerialNumber}" IsReadOnly="True" Background="{DynamicResource Theme.ControlBorder}" />
 
         <TextBlock Text="License key" Margin="0,14,0,2" />
         <Grid>
