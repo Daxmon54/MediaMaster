@@ -15,11 +15,6 @@ Namespace Views
             DataContext = _viewModel
 
             AddHandler _viewModel.RequestClose, AddressOf OnRequestClose
-            AddHandler Loaded, AddressOf OnLoaded
-        End Sub
-
-        Private Async Sub OnLoaded(sender As Object, e As RoutedEventArgs)
-            Await _viewModel.LoadEditionsAsync()
         End Sub
 
         Private Sub OnRequestClose(sender As Object, saved As Boolean)

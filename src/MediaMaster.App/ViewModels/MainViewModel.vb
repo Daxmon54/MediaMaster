@@ -69,6 +69,10 @@ Namespace ViewModels
             LogEntries.Add(New LogEntry With {.Timestamp = DateTime.Now, .Text = logLine})
         End Sub
 
+        Public Sub ClearLog()
+            LogEntries.Clear()
+        End Sub
+
         Public Sub SetProgress(current As Integer, maximum As Integer)
             ProgressValue = current
             ProgressMaximum = maximum

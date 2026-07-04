@@ -4,6 +4,7 @@ Namespace Polling
     Public Interface IUiUpdateSink
         Sub UpdateStatus(statusText As String)
         Sub AppendLog(logLine As String)
+        Sub ClearLog()
         Sub SetProgress(current As Integer, maximum As Integer)
     End Interface
 

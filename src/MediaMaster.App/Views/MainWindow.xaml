@@ -28,6 +28,11 @@
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="Minimize to tray" Command="{Binding MinimizeToTrayCommand}" />
+                <Separator />
+                <MenuItem Header="Theme">
+                    <MenuItem x:Name="ThemeLightMenuItem" Header="Light" Click="OnThemeLightClick" />
+                    <MenuItem x:Name="ThemeDarkMenuItem" Header="Dark" Click="OnThemeDarkClick" />
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="_Info">
                 <MenuItem Header="Registration" IsEnabled="False" />

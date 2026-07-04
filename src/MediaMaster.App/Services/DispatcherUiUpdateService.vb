@@ -27,6 +27,10 @@ Namespace Services
             _dispatcher.BeginInvoke(Sub() _viewModel.AppendLog(logLine))
         End Sub
 
+        Public Sub ClearLog() Implements IUiUpdateSink.ClearLog
+            _dispatcher.BeginInvoke(Sub() _viewModel.ClearLog())
+        End Sub
+
         Public Sub SetProgress(current As Integer, maximum As Integer) Implements IUiUpdateSink.SetProgress
             _dispatcher.BeginInvoke(Sub() _viewModel.SetProgress(current, maximum))
         End Sub

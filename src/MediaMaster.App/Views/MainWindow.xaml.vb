@@ -1,6 +1,8 @@
 Imports System.ComponentModel
 Imports System.Windows
+Imports MediaMaster.App.Services
 Imports MediaMaster.App.ViewModels
+Imports MediaMaster.Core.Configuration
 
 Namespace Views
 
@@ -8,27 +10,62 @@ Namespace Views
         Inherits Window
 
         Private ReadOnly _viewModel As MainViewModel
+        Private ReadOnly _settingsProvider As IAppSettingsProvider
         Private ReadOnly _settingsWindowFactory As Func(Of SettingsWindow)
         Private ReadOnly _destinationSettingsWindowFactory As Func(Of DestinationSettingsWindow)
         Private ReadOnly _sourceSettingsWindowFactory As Func(Of SourceSettingsWindow)
+        Private ReadOnly _registrationWindowFactory As Func(Of RegistrationWindow)
         Private _confirmedQuit As Boolean = False
 
         Public Sub New(viewModel As MainViewModel,
+                        settingsProvider As IAppSettingsProvider,
                         settingsWindowFactory As Func(Of SettingsWindow),
                         destinationSettingsWindowFactory As Func(Of DestinationSettingsWindow),
-                        sourceSettingsWindowFactory As Func(Of SourceSettingsWindow))
+                        sourceSettingsWindowFactory As Func(Of SourceSettingsWindow),
+                        registrationWindowFactory As Func(Of RegistrationWindow))
             InitializeComponent()
 
             _viewModel = viewModel
+            _settingsProvider = settingsProvider
             _settingsWindowFactory = settingsWindowFactory
             _destinationSettingsWindowFactory = destinationSettingsWindowFactory
             _sourceSettingsWindowFactory = sourceSettingsWindowFactory
+            _registrationWindowFactory = registrationWindowFactory
             DataContext = _viewModel
+
+            UpdateThemeMenuChecks(_settingsProvider.GetSettings().Theme)
 
             AddHandler _viewModel.RestoreRequested, AddressOf OnRestoreRequested
             AddHandler _viewModel.QuitRequested, AddressOf OnQuitRequested
             AddHandler _viewModel.MinimizeToTrayRequested, AddressOf OnMinimizeToTrayRequested
             AddHandler _viewModel.LogEntries.CollectionChanged, AddressOf OnLogEntriesChanged
+        End Sub
+
+        Private Sub OnThemeLightClick(sender As Object, e As RoutedEventArgs)
+            ApplyTheme(AppTheme.Light)
+        End Sub
+
+        Private Sub OnThemeDarkClick(sender As Object, e As RoutedEventArgs)
+            ApplyTheme(AppTheme.Dark)
+        End Sub
+
+        Private Sub ApplyTheme(theme As AppTheme)
+            ThemeManager.Apply(theme)
+            Dim settings = _settingsProvider.GetSettings()
+            settings.Theme = theme
+            _settingsProvider.Save()
+            UpdateThemeMenuChecks(theme)
+        End Sub
+
+        Private Sub UpdateThemeMenuChecks(theme As AppTheme)
+            ThemeLightMenuItem.IsChecked = (theme = AppTheme.Light)
+            ThemeDarkMenuItem.IsChecked = (theme = AppTheme.Dark)
+        End Sub
+
+        Private Sub OnOpenRegistrationClick(sender As Object, e As RoutedEventArgs)
+            Dim registrationWindow = _registrationWindowFactory()
+            registrationWindow.Owner = Me
+            registrationWindow.ShowDialog()
         End Sub
 
         Private Sub OnOpenSettingsClick(sender As Object, e As RoutedEventArgs)
@@ -103,7 +140,10 @@ Namespace Views
 
         Private Sub OnLogEntriesChanged(sender As Object, e As Specialized.NotifyCollectionChangedEventArgs)
             If LogListBox.Items.Count > 0 Then
-                LogListBox.ScrollIntoView(LogListBox.Items(LogListBox.Items.Count - 1))
+                ' Select and scroll to the newest line (mirrors the original WinDev ListSelectPlus behavior).
+                Dim lastItem = LogListBox.Items(LogListBox.Items.Count - 1)
+                LogListBox.SelectedItem = lastItem
+                LogListBox.ScrollIntoView(lastItem)
             End If
         End Sub
 

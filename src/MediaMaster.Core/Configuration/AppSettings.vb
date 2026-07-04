@@ -7,6 +7,11 @@ Namespace Configuration
         TitleArtistYear = 4
     End Enum
 
+    Public Enum AppTheme
+        Light = 0
+        Dark = 1
+    End Enum
+
     Public Class DisplayOrderSettings
         Public Property Mode As DisplayOrderMode = DisplayOrderMode.ArtistTitle
         Public Property Separator1 As String = "-"
@@ -86,6 +91,17 @@ Namespace Configuration
         ''' <summary>On-air/off-air semaphore folder; when a PFL_A.SEM/PFL_B.SEM file is present, publishing is suppressed.</summary>
         Public Property PflFolder As String = ""
         Public Property ConnectionString As String = "Data Source=mediamaster.db"
+        Public Property Theme As AppTheme = AppTheme.Light
+
+        ''' <summary>
+        ''' Registration metadata (matches the original's gsNaam/gsSerieNr/gsSleutel). Purely
+        ''' informational here -- there is no license gate anywhere in this port, and the original
+        ''' KeyGenerateInitialKey/KeyCompareKey algorithms are opaque WinDev builtins with no
+        ''' available source, so they can't be faithfully replicated.
+        ''' </summary>
+        Public Property RegisteredName As String = ""
+        Public Property SerialNumber As String = ""
+        Public Property LicenseKey As String = ""
 
         Public Property DisplayOrder As New DisplayOrderSettings()
         Public Property Export As New ExportSettings()

@@ -1,10 +1,6 @@
-Imports System.Collections.ObjectModel
-Imports System.Threading.Tasks
 Imports System.Windows.Input
 Imports CommunityToolkit.Mvvm.ComponentModel
 Imports CommunityToolkit.Mvvm.Input
-Imports MediaMaster.Data.Entities
-Imports MediaMaster.Data.Repositories
 Imports MediaMaster.Core.Configuration
 
 Namespace ViewModels
@@ -25,14 +21,11 @@ Namespace ViewModels
         Inherits ObservableObject
 
         Private ReadOnly _settingsProvider As IAppSettingsProvider
-        Private ReadOnly _editionRepository As IEditionRepository
 
         Public Event RequestClose As EventHandler(Of Boolean)
 
-        Public Sub New(settingsProvider As IAppSettingsProvider, editionRepository As IEditionRepository)
+        Public Sub New(settingsProvider As IAppSettingsProvider)
             _settingsProvider = settingsProvider
-            _editionRepository = editionRepository
-            Editions = New ObservableCollection(Of Edition)()
 
             SaveCommand = New RelayCommand(AddressOf OnSave)
             CancelCommand = New RelayCommand(AddressOf OnCancel)
@@ -40,15 +33,6 @@ Namespace ViewModels
             LoadFromSettings()
         End Sub
 
-        Public Async Function LoadEditionsAsync() As Task
-            Dim editions = Await _editionRepository.GetAllAsync()
-            Editions.Clear()
-            For Each edition In editions
-                Editions.Add(edition)
-            Next
-        End Function
-
-        Public ReadOnly Property Editions As ObservableCollection(Of Edition)
         Public ReadOnly Property SaveCommand As ICommand
         Public ReadOnly Property CancelCommand As ICommand
 
@@ -61,26 +45,6 @@ Namespace ViewModels
             End Get
             Set(value As Boolean)
                 SetProperty(_traceEnabled, value)
-            End Set
-        End Property
-
-        Private _language As String = "en"
-        Public Property Language As String
-            Get
-                Return _language
-            End Get
-            Set(value As String)
-                SetProperty(_language, value)
-            End Set
-        End Property
-
-        Private _selectedEditionId As Integer
-        Public Property SelectedEditionId As Integer
-            Get
-                Return _selectedEditionId
-            End Get
-            Set(value As Integer)
-                SetProperty(_selectedEditionId, value)
             End Set
         End Property
 
@@ -284,8 +248,6 @@ Namespace ViewModels
             Dim settings = _settingsProvider.GetSettings()
 
             TraceEnabled = settings.TraceEnabled
-            Language = settings.Language
-            SelectedEditionId = settings.EditionId
             LogToDatabase = settings.Tracklog.LogToDatabase
             LogToFile = settings.Tracklog.LogToFile
             TrackLogFolderPath = settings.Tracklog.FolderPath
@@ -321,8 +283,6 @@ Namespace ViewModels
             Dim settings = _settingsProvider.GetSettings()
 
             settings.TraceEnabled = TraceEnabled
-            settings.Language = Language
-            settings.EditionId = SelectedEditionId
             settings.Tracklog.LogToDatabase = LogToDatabase
             settings.Tracklog.LogToFile = LogToFile
             settings.Tracklog.FolderPath = TrackLogFolderPath

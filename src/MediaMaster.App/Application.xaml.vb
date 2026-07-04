@@ -29,6 +29,8 @@ Partial Public Class Application
             dbContext.Database.Migrate()
         End Using
 
+        ThemeManager.Apply(Host.Services.GetRequiredService(Of IAppSettingsProvider)().GetSettings().Theme)
+
         Dim mainWindow = Host.Services.GetRequiredService(Of MainWindow)()
         mainWindow.Show()
     End Sub
@@ -84,11 +86,16 @@ Partial Public Class Application
         services.AddTransient(Of SourceSettingsWindow)()
         services.AddSingleton(Of Func(Of SourceSettingsWindow))(Function(sp) Function() sp.GetRequiredService(Of SourceSettingsWindow)())
 
+        services.AddTransient(Of RegistrationViewModel)()
+        services.AddTransient(Of RegistrationWindow)()
+        services.AddSingleton(Of Func(Of RegistrationWindow))(Function(sp) Function() sp.GetRequiredService(Of RegistrationWindow)())
+
         services.AddSingleton(Of HttpClient)()
         services.AddSingleton(Of ISourceMonitorFactory, SourceMonitorFactory)()
         services.AddSingleton(Of ISourceMonitor)(Function(sp) sp.GetRequiredService(Of ISourceMonitorFactory)().Create())
         services.AddHostedService(Of PollingCoordinator)()
         services.AddHostedService(Of SourceMonitorHostedService)()
+        services.AddHostedService(Of MidnightLogResetService)()
     End Sub
 
 End Class

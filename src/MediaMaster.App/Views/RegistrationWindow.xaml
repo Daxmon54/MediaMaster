@@ -1,0 +1,37 @@
+<Window x:Class="Views.RegistrationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MediaMaster Registration" Height="260" Width="520"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+
+    <StackPanel Margin="14">
+        <TextBlock Text="Name" Margin="0,0,0,2" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Text="{Binding Name}" />
+            <Button Grid.Column="1" Content="Generate" Width="80" Margin="6,0,0,0" Command="{Binding GenerateSerialCommand}" />
+        </Grid>
+
+        <TextBlock Text="Serial number" Margin="0,14,0,2" />
+        <TextBox Text="{Binding SerialNumber}" IsReadOnly="True" Background="#EEEEEE" />
+
+        <TextBlock Text="License key" Margin="0,14,0,2" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Text="{Binding LicenseKey}" />
+            <Button Grid.Column="1" Content="Unlock" Width="80" Margin="6,0,0,0" Command="{Binding UnlockCommand}" />
+        </Grid>
+
+        <TextBlock Text="MediaMaster runs fully unlocked in this build; these fields are kept for record-keeping only."
+                   TextWrapping="Wrap" Foreground="Gray" Margin="0,18,0,0" />
+    </StackPanel>
+</Window>
