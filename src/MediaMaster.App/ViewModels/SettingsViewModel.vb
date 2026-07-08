@@ -48,6 +48,16 @@ Namespace ViewModels
             End Set
         End Property
 
+        Private _correctTrackCasing As Boolean
+        Public Property CorrectTrackCasing As Boolean
+            Get
+                Return _correctTrackCasing
+            End Get
+            Set(value As Boolean)
+                SetProperty(_correctTrackCasing, value)
+            End Set
+        End Property
+
         Private _logToDatabase As Boolean
         Public Property LogToDatabase As Boolean
             Get
@@ -248,6 +258,7 @@ Namespace ViewModels
             Dim settings = _settingsProvider.GetSettings()
 
             TraceEnabled = settings.TraceEnabled
+            CorrectTrackCasing = settings.CorrectTrackCasing
             LogToDatabase = settings.Tracklog.LogToDatabase
             LogToFile = settings.Tracklog.LogToFile
             TrackLogFolderPath = settings.Tracklog.FolderPath
@@ -283,6 +294,7 @@ Namespace ViewModels
             Dim settings = _settingsProvider.GetSettings()
 
             settings.TraceEnabled = TraceEnabled
+            settings.CorrectTrackCasing = CorrectTrackCasing
             settings.Tracklog.LogToDatabase = LogToDatabase
             settings.Tracklog.LogToFile = LogToFile
             settings.Tracklog.FolderPath = TrackLogFolderPath

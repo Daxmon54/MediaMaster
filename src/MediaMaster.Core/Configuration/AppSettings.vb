@@ -88,6 +88,8 @@ Namespace Configuration
         Public Property EditionId As Integer
         Public Property ReplaceAmpersand As Boolean
         Public Property TraceEnabled As Boolean
+        ''' <summary>When true, artist/title are looked up against an online music database (MusicBrainz) and replaced with the canonical, correctly-cased spelling.</summary>
+        Public Property CorrectTrackCasing As Boolean
         ''' <summary>On-air/off-air semaphore folder; when a PFL_A.SEM/PFL_B.SEM file is present, publishing is suppressed.</summary>
         Public Property PflFolder As String = ""
         Public Property ConnectionString As String = "Data Source=mediamaster.db"

@@ -8,6 +8,7 @@ Imports MediaMaster.App.Services
 Imports MediaMaster.App.ViewModels
 Imports MediaMaster.App.Views
 Imports MediaMaster.Core.Configuration
+Imports MediaMaster.Core.Enrichment
 Imports MediaMaster.Core.Monitoring
 Imports MediaMaster.Core.Pipeline
 Imports MediaMaster.Core.Polling
@@ -67,6 +68,7 @@ Partial Public Class Application
         services.AddSingleton(Of IExportFileWriter, ExportFileWriter)()
         services.AddSingleton(Of IPlaylogWriter, PlaylogWriter)()
         services.AddSingleton(Of ILiveTrackWriter, LiveTrackWriter)()
+        services.AddSingleton(Of ITrackNameResolver, MusicBrainzTrackNameResolver)()
         services.AddSingleton(Of ITrackPublisher, TrackPublisher)()
 
         services.AddSingleton(Of MainViewModel)()

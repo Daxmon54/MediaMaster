@@ -1,5 +1,7 @@
 Imports System.Threading
+Imports System.Threading.Tasks
 Imports MediaMaster.Core.Configuration
+Imports MediaMaster.Core.Enrichment
 Imports MediaMaster.Core.Monitoring
 Imports MediaMaster.Core.Pipeline
 Imports MediaMaster.Core.Polling
@@ -21,7 +23,8 @@ Public Class TrackPublisherTests
     ''' <summary>Builds a TrackPublisher whose IExportFileWriter appends every published track to <paramref name="capturedExports"/>.</summary>
     Private Shared Function MakePublisher(settings As AppSettings,
                                            capturedExports As List(Of TrackInfo),
-                                           Optional trackLogSink As ITrackLogSink = Nothing) As TrackPublisher
+                                           Optional trackLogSink As ITrackLogSink = Nothing,
+                                           Optional nameResolver As ITrackNameResolver = Nothing) As TrackPublisher
         Dim settingsProvider = New Mock(Of IAppSettingsProvider)()
         settingsProvider.Setup(Function(s) s.GetSettings()).Returns(settings)
 
@@ -33,7 +36,14 @@ Public Class TrackPublisherTests
         Dim liveTrackWriter = New Mock(Of ILiveTrackWriter)()
         Dim uiSink = New Mock(Of IUiUpdateSink)()
 
-        Return New TrackPublisher(settingsProvider.Object, exportWriter.Object, playlogWriter.Object, liveTrackWriter.Object, uiSink.Object, trackLogSink)
+        Return New TrackPublisher(settingsProvider.Object, exportWriter.Object, playlogWriter.Object, liveTrackWriter.Object, uiSink.Object, trackLogSink, nameResolver)
+    End Function
+
+    Private Shared Function ResolverReturning(result As ResolvedName) As ITrackNameResolver
+        Dim resolver = New Mock(Of ITrackNameResolver)()
+        resolver.Setup(Function(r) r.ResolveAsync(It.IsAny(Of String), It.IsAny(Of String), It.IsAny(Of CancellationToken))).
+            Returns(Task.FromResult(result))
+        Return resolver.Object
     End Function
 
     <Fact>
@@ -120,6 +130,49 @@ Public Class TrackPublisherTests
         Await publisher.PublishAsync("CARMEN", raw, logToDatabase:=False, cancellationToken:=CancellationToken.None)
 
         trackLogSink.Verify(Function(s) s.LogAsync(It.IsAny(Of TrackInfo), It.IsAny(Of Integer), It.IsAny(Of CancellationToken)), Times.Never)
+    End Function
+
+    <Fact>
+    Public Async Function PublishAsync_AppliesOnlineCasing_WhenEnabledAndMatched() As Task
+        Dim settings = MakeSettings()
+        settings.CorrectTrackCasing = True
+        Dim capturedExports As New List(Of TrackInfo)()
+        Dim resolver = ResolverReturning(New ResolvedName With {.Artist = "ABBA", .Title = "Dancing Queen", .Matched = True})
+        Dim publisher = MakePublisher(settings, capturedExports, nameResolver:=resolver)
+
+        Dim raw As New TrackInfo With {.Artist = "ABBA", .Title = "DANCING QUEEN"}
+        Dim result = Await publisher.PublishAsync("Caliope", raw, logToDatabase:=False, cancellationToken:=CancellationToken.None)
+
+        Assert.Equal("Dancing Queen", result.Title)
+        Assert.Equal("Dancing Queen", Assert.Single(capturedExports).Title)
+    End Function
+
+    <Fact>
+    Public Async Function PublishAsync_LeavesTextUnchanged_WhenNoMatch() As Task
+        Dim settings = MakeSettings()
+        settings.CorrectTrackCasing = True
+        Dim capturedExports As New List(Of TrackInfo)()
+        Dim resolver = ResolverReturning(New ResolvedName With {.Artist = "ABBA", .Title = "DANCING QUEEN", .Matched = False})
+        Dim publisher = MakePublisher(settings, capturedExports, nameResolver:=resolver)
+
+        Dim raw As New TrackInfo With {.Artist = "ABBA", .Title = "DANCING QUEEN"}
+        Dim result = Await publisher.PublishAsync("Caliope", raw, logToDatabase:=False, cancellationToken:=CancellationToken.None)
+
+        Assert.Equal("DANCING QUEEN", result.Title)
+    End Function
+
+    <Fact>
+    Public Async Function PublishAsync_DoesNotCallResolver_WhenCorrectionDisabled() As Task
+        Dim settings = MakeSettings()
+        settings.CorrectTrackCasing = False
+        Dim capturedExports As New List(Of TrackInfo)()
+        Dim resolver = New Mock(Of ITrackNameResolver)()
+        Dim publisher = MakePublisher(settings, capturedExports, nameResolver:=resolver.Object)
+
+        Dim raw As New TrackInfo With {.Artist = "ABBA", .Title = "DANCING QUEEN"}
+        Await publisher.PublishAsync("Caliope", raw, logToDatabase:=False, cancellationToken:=CancellationToken.None)
+
+        resolver.Verify(Function(r) r.ResolveAsync(It.IsAny(Of String), It.IsAny(Of String), It.IsAny(Of CancellationToken)), Times.Never)
     End Function
 
 End Class

@@ -18,6 +18,8 @@
             <TabItem Header="General">
                 <StackPanel Margin="12">
                     <CheckBox Content="Enable trace/debug logging" IsChecked="{Binding TraceEnabled}" Margin="0,4" />
+                    <CheckBox Content="Correct artist/title casing from an online music database (MusicBrainz)"
+                              IsChecked="{Binding CorrectTrackCasing}" Margin="0,4" />
 
                     <Separator Margin="0,14" />
 
